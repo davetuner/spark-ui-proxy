@@ -31,7 +31,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 BIND_ADDR = os.environ.get("BIND_ADDR", "0.0.0.0")
 SERVER_PORT = int(os.environ.get("SERVER_PORT", "80"))
 URL_PREFIX = os.environ.get("URL_PREFIX", "").rstrip('/') + '/'
-SPARK_MASTER_HOST = ""
+SPARK_MASTER_HOST = os.environ.get("SPARK_MASTER_HOST", "0.0.0.0")
 
 
 class ProxyHandler(BaseHTTPRequestHandler):
@@ -112,14 +112,15 @@ class ProxyHandler(BaseHTTPRequestHandler):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print("Usage: <proxied host:port> [<proxy port>]")
-        sys.exit(1)
+    if len(sys.argv) != 1:
+        if len(sys.argv) < 2:
+            print("Usage: <proxied host:port> [<proxy port>]")
+            sys.exit(1)
 
-    SPARK_MASTER_HOST = sys.argv[1]
+        SPARK_MASTER_HOST = sys.argv[1]
 
-    if len(sys.argv) >= 3:
-        SERVER_PORT = int(sys.argv[2])
+        if len(sys.argv) >= 3:
+            SERVER_PORT = int(sys.argv[2])
 
     print("Starting server on http://{0}:{1}".format(BIND_ADDR, SERVER_PORT))
 
